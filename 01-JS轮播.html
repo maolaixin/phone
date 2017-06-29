@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,user-scalable=no">
+    <title>Document</title>
+<style>
+body{
+    margin: 0;
+    overflow:hidden;
+}
+.banner{
+    width:100%;
+    height: 4rem;
+    position: relative;
+}
+.list{
+    padding: 0;
+    margin: 0;
+    width:400%;
+    position: absolute;
+    top:0;
+    left:0;
+    list-style: none;
+}
+.list li{
+    float: left;
+    width:6.4rem;
+    height:4rem;
+}
+.list li img{
+    width:6.4rem;
+    height:4rem;
+    display: block;
+}
+nav{
+    width:6.4rem;
+    height: 10px;
+    position: absolute;
+    bottom:5px;
+    z-index: 1;
+    text-align:center;
+}
+nav a{
+    width:15px;
+    height: 15px;
+    display: inline-block;
+    background: red;
+    border-radius:50%;
+    vertical-align:top;
+}
+nav a.active{
+    background:#fff;
+}
+</style>
+</head>
+<body>
+    <h1>az李四11111aa</h1>
+    <h1>a李四2222222aaa</h1>
+    <h2>李四111111111111111111</h2>
+    <h1>aaaaaaa</h1>
+
+
+    <h2>李四111111111111111111</h2>
+    <h2>李四111111111111111111</h2>
+    <h2>李四111111111111111111</h2>
+    <h2>李四111111111111111111</h2>
+    
+    <h3>李四222222222222222</h3>
+    <h3>李四222222222222222</h3>
+    <section class="banner" id="banner">
+        <ul class="list">
+            <li><img src="img/img.jpg" alt="" /></li>
+            <li><img src="img/img2.jpg" alt="" /></li>
+            <li><img src="img/img3.jpg" alt="" /></li>
+            <li><img src="img/img4.jpg" alt="" /></li>
+        </ul>
+        <nav>
+            <a href="javascript:;" class="active">1</a>
+            <a href="javascript:;" >2</a>
+            <a href="javascript:;">3</a>
+            <a href="javascript:;">4</a>
+        </nav>
+    </section>
+</body>
+<script type="text/javascript" src="js/common_rem.js"></script>
+<script type="text/javascript" src="js/mv.js"></script>
+<script type="text/javascript" >
+    //阻止document默认的触摸行为
+    document.addEventListener('touchstart',function(e){
+        e.preventDefault();
+    });
+
+    //1 找标签
+    var banner = document.getElementById("banner");
+    var list= banner.getElementsByClassName("list")[0];
+    var a = banner.getElementsByTagName('a');
+
+    var startX = 0;// 手指触摸时坐标
+    var listLeft = 0; //当前触摸的list距离左边的位置
+    var w = banner.clientWidth;
+    var len=0;// li的长度
+    var n =0; // 第0个小圆点
+
+
+    //初始化操作
+    list.innerHTML += list.innerHTML;
+    len = list.children.length;
+    list.style.width = w* len +"px";
+
+
+
+    //添加事件
+    list.addEventListener('touchstart', start);
+    list.addEventListener('touchmove', move);
+    list.addEventListener('touchend', end);
+
+    function start(ev){
+        startX = ev.changedTouches[0].pageX;
+        list.style.transition='none';
+        //计算当前点击的是第几张!!!
+        var num = Math.round((list.offsetLeft/w));
+
+        /*临界点判断
+         1. 如果是第1张图,变为第5张!
+         2. 如果是第8张(长度-1) 初始化为最后一张!
+        */
+
+       //默认显示第2份的第一张!
+       if(num==0){
+          num = a.length; //第5张, 二组的第1张
+          console.log("手按下时索引:"+ num);
+          list.style.left = -num * w +"px";
+       }
+       //最后1张判断,最后1张索引7
+       if(-num  == len-1){
+            //初始化为第一份的最后1张!   索引为3
+            num = a.length -1;
+            list.style.left = -num * w +"px";
+       }
+       listLeft = this.offsetLeft;
+    }
+    function move(ev){
+        //坐标   当前left+  (指点-起点)
+        list.style.left = (ev.changedTouches[0].pageX-startX) + listLeft +"px";
+    }
+    function end(ev){
+       //结束位置所在图片位置!!!!
+       var num = Math.round(list.offsetLeft / w);
+       console.log("手抬起后值:"+ num);
+       //移动
+       list.style.left = num * w +"px";
+       list.style.transition="0.5s";
+
+
+       //小圆点
+       a[n].className = '';
+       a[-num %a.length].className='active'; //5-->第1个圆点  6-->第2个   7-->第3
+       n = -num % a.length;
+    }
+</script>
+</html>
